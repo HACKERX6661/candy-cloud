@@ -33,7 +33,6 @@
             background: #23a6d5; color: white; padding: 15px 30px; border: none; 
             border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 15px;
         }
-        .info-box { background: #e3f2fd; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -45,7 +44,7 @@
         <button onclick="sendCode()" class="buy-button">Code anfordern</button>
         
         <div id="code-section" style="display: none; margin-top: 20px;">
-            <p>Code aus der E-Mail eingeben:</p>
+            <p>Code eingeben:</p>
             <input type="text" id="inputCode" placeholder="6-stelliger Code" maxlength="6">
             <button onclick="verifyCode()" class="buy-button" style="background: #23d5ab;">Shop öffnen</button>
         </div>
@@ -53,53 +52,42 @@
 
     <div id="main-shop" class="shop-container" style="display: none;">
         <h1>☁️ Candy Cloud ☁️</h1>
-        <div class="info-box">🚚 Versandkosten: 4,50 € werden am Ende hinzugefügt.</div>
+        <p>Versandkosten: 4,50 €</p>
 
-        <form name="candy-order" method="POST" data-netlify="true" data-netlify-recaptcha="true" action="/success.html">
+        <form action="https://formspree.io/f/mjgveeel" method="POST">
             <div class="product-card">
                 <img src="prime.jpg" alt="Prime">
-                <div class="product-info"><strong>Prime Hydration</strong><br><span class="price">3,50 €</span></div>
-                <input type="checkbox" name="item" value="Prime">
+                <div><strong>Prime Hydration</strong><br><span class="price">3,50 €</span></div>
+                <input type="checkbox" name="Produkt" value="Prime" style="width:20px; margin-left:20px;">
             </div>
 
             <div class="product-card">
                 <img src="takis.jpg" alt="Takis">
-                <div class="product-info"><strong>Takis Fuego</strong><br><span class="price">4,50 €</span></div>
-                <input type="checkbox" name="item" value="Takis">
+                <div><strong>Takis Fuego</strong><br><span class="price">4,50 €</span></div>
+                <input type="checkbox" name="Produkt" value="Takis" style="width:20px; margin-left:20px;">
             </div>
 
-            <input type="text" name="name" placeholder="Dein Name" required>
-            <input type="text" name="adresse" placeholder="Lieferadresse" required>
-
-            <div data-netlify-recaptcha="true"></div>
-
-            <button type="submit" class="buy-button">Bestellung abschicken & Rechnung erhalten</button>
+            <input type="text" name="Name" placeholder="Dein Name" required>
+            <input type="text" name="Adresse" placeholder="Adresse" required>
+            
+            <button type="submit" class="buy-button">Bestellung abschicken</button>
         </form>
     </div>
 
     <script>
         let generatedCode;
-
         function sendCode() {
-            const email = document.getElementById('userEmail').value;
-            if(!email.includes('@')) return alert("Bitte eine echte E-Mail angeben!");
-            
-            // Bot generiert Code
             generatedCode = Math.floor(100000 + Math.random() * 900000);
-            
-            // HINWEIS: Damit die Mail wirklich ankommt, brauchen wir EmailJS.
-            // Für den Test zeigt der Browser den Code jetzt als Alarm an:
-            alert("BOT-NACHRICHT: Dein Login-Code ist: " + generatedCode);
+            alert("BOT: Dein Login-Code ist: " + generatedCode);
             document.getElementById('code-section').style.display = 'block';
         }
 
         function verifyCode() {
-            const input = document.getElementById('inputCode').value;
-            if(input == generatedCode) {
+            if(document.getElementById('inputCode').value == generatedCode) {
                 document.getElementById('auth-gate').style.display = 'none';
                 document.getElementById('main-shop').style.display = 'block';
             } else {
-                alert("Falscher Code! Schau nochmal in deine Mails.");
+                alert("Falscher Code!");
             }
         }
     </script>
