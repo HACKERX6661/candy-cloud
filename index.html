@@ -1,64 +1,43 @@
-<div id="main-shop" class="shop-container" style="display: none;">
-        <h1>☁️ Candy Cloud ☁️</h1>
-        <p style="background: #fff3e0; padding: 10px; border-radius: 8px;">ℹ️ Versandkosten: 4,50 €</p>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geo Quiz Master</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f4f8; text-align: center; margin: 0; padding: 20px; }
+        h1 { color: #2c3e50; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 1000px; margin: 40px auto; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; text-decoration: none; color: black; display: block; }
+        .card:hover { transform: translateY(-5px); background-color: #e1f5fe; }
+        .card img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
+        .card h2 { margin: 10px 0; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
 
-        <form id="orderForm" action="https://formspree.io/f/DEINE_ID" method="POST">
-            <div class="product-card">
-                <img src="prime.jpg" alt="Prime">
-                <div style="flex-grow:1;"><strong>Prime Hydration</strong><br><span class="price">3,50 €</span></div>
-                <input type="checkbox" name="Produkt_Prime" value="Ja" data-price="3.50" class="item-check" style="width:20px;">
-            </div>
+    <h1>🌍 Was möchtest du heute üben?</h1>
+    <p>Wähle einen Kontinent oder ein Thema aus:</p>
 
-            <div class="product-card">
-                <img src="takis.jpg" alt="Takis">
-                <div style="flex-grow:1;"><strong>Takis Fuego</strong><br><span class="price">4,50 €</span></div>
-                <input type="checkbox" name="Produkt_Takis" value="Ja" data-price="4.50" class="item-check" style="width:20px;">
-            </div>
+    <div class="grid-container">
+        <a href="europa.html" class="card">
+            <img src="https://flagpedia.net/data/org/eu.png" alt="Europa">
+            <h2>Europa Quiz</h2>
+            <p>Städte & Länder in Europa</p>
+        </a>
 
-            <input type="text" name="Kunde_Name" placeholder="Dein vollständiger Name" required>
-            <input type="text" name="Lieferadresse" placeholder="Straße, Hausnummer, PLZ, Ort" required>
-            
-            <input type="hidden" id="totalAmount" name="Gesamtsumme_inkl_Versand">
+        <a href="asien.html" class="card">
+            <img src="https://flagpedia.net/data/org/asia.png" alt="Asien">
+            <h2>Asien Quiz</h2>
+            <p>Entdecke den größten Kontinent</p>
+        </a>
 
-            <button type="button" onclick="calculateAndSend()" class="buy-button">Bestellung & Rechnung prüfen</button>
-        </form>
+        <a href="amerika.html" class="card">
+            <img src="https://flagpedia.net/data/org/un.png" alt="Amerika">
+            <h2>Amerika Quiz</h2>
+            <p>Nord- und Südamerika</p>
+        </a>
     </div>
 
-    <script>
-        let generatedCode;
-        function sendCode() {
-            generatedCode = Math.floor(100000 + Math.random() * 900000);
-            alert("BOT: Dein Login-Code ist: " + generatedCode);
-            document.getElementById('code-section').style.display = 'block';
-        }
-
-        function verifyCode() {
-            if(document.getElementById('inputCode').value == generatedCode) {
-                document.getElementById('auth-gate').style.display = 'none';
-                document.getElementById('main-shop').style.display = 'block';
-            } else { alert("Falscher Code!"); }
-        }
-
-        function calculateAndSend() {
-            let summe = 4.50; // Start mit Versandkosten
-            let selected = false;
-            
-            document.querySelectorAll('.item-check:checked').forEach(item => {
-                summe += parseFloat(item.getAttribute('data-price'));
-                selected = true;
-            });
-
-            if(!selected) return alert("Bitte wähle mindestens ein Produkt aus!");
-
-            const rechnungInfo = "DEINE RECHNUNG:\n" + 
-                                 "------------------\n" +
-                                 "Produkte + 4,50 € Versand\n" +
-                                 "GESAMTBETRAG: " + summe.toFixed(2) + " €\n\n" +
-                                 "Klicke OK, um die Bestellung abzuschicken.";
-
-            if(confirm(rechnungInfo)) {
-                document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
-                document.getElementById('orderForm').submit();
-            }
-        }
-    </script>
+</body>
+</html>
