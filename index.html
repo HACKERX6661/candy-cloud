@@ -51,6 +51,7 @@
             </div>
 
             <hr>
+            <h3>Lieferdaten</h3>
             <input type="text" name="Kunde" placeholder="Name" required>
             <input type="email" id="autoEmail" name="Email" readonly required style="background: #f9f9f9;">
             <input type="tel" name="Telefon" placeholder="Telefonnummer" required>
@@ -60,8 +61,9 @@
                 <input type="text" name="Ort" placeholder="Ort" required>
             </div>
             
+            <input type="hidden" name="_next" value="https://paypal.me/DEINNAME"> 
             <input type="hidden" id="totalAmount" name="GESAMTSUMME">
-            <button type="button" onclick="calculateAndSend()" class="buy-button">Bestellung abschicken</button>
+            <button type="button" onclick="calculateAndSend()" class="buy-button">Bestellen & Bezahlen</button>
         </form>
     </div>
 
@@ -86,10 +88,13 @@
         }
 
         function calculateAndSend() {
-            let summe = 2.50;
+            let summe = 2.50; // Versandkosten
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
             document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
-            document.getElementById('orderForm').submit();
+            
+            if(confirm("Gesamtsumme: " + summe.toFixed(2) + " €\nDu wirst nach dem Absenden zu PayPal weitergeleitet.")) {
+                document.getElementById('orderForm').submit();
+            }
         }
     </script>
 </body>
