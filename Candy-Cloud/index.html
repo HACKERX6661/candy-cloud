@@ -6,23 +6,19 @@
     <title>Candy Cloud Shop</title>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        /* Hintergrund & Zentrierung */
         body { 
             font-family: 'Segoe UI', sans-serif; 
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); 
             background-size: 400% 400%; 
             animation: gradient 15s ease infinite; 
-            display: flex; /* Zentriert das Fenster */
+            display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
-            padding: 20px; 
-            box-sizing: border-box;
+            padding: 20px;
         }
         @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        
-        /* Das Shop-Fenster */
         .shop-container { 
             background: rgba(255, 255, 255, 0.95); 
             padding: 30px; 
@@ -32,26 +28,22 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
             text-align: center;
         }
-        
+        .logo-header { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #e73c7e; margin-bottom: 10px; }
         .product-card { border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; padding: 15px; display: flex; align-items: center; text-align: left; background: #fff; }
         .product-card img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: contain; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
         .address-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
         .buy-button { background: #e73c7e; color: white; padding: 15px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-        
-        /* Logo oben fixiert */
-        .logo-header { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #e73c7e; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
-        h3 { margin: 15px 0 5px 0; color: #333; text-align: left; font-size: 18px; }
     </style>
 </head>
 <body>
 
     <div id="auth-gate" class="shop-container">
         <h2>🍭 Candy Cloud Login</h2>
-        <input type="email" id="userEmail" placeholder="Deine E-Mail Adresse">
+        <input type="email" id="userEmail" placeholder="Deine E-Mail">
         <button onclick="sendCode()" class="buy-button">Code senden</button>
         <div id="code-section" style="display: none; margin-top: 20px;">
-            <input type="text" id="inputCode" placeholder="Code eingeben">
+            <input type="text" id="inputCode" placeholder="Code aus der Mail">
             <button onclick="verifyCode()" class="buy-button" style="background: #23d5ab;">Shop öffnen</button>
         </div>
     </div>
@@ -59,36 +51,28 @@
     <div id="main-shop" class="shop-container" style="display: none;">
         <img src="Candy-Cloud/saure_strips.jpg" class="logo-header" alt="Logo">
         <h1>☁️ Candy Cloud ☁️</h1>
-        <p style="background: #e8f5e9; padding: 10px; border-radius: 8px; color: #2e7d32; font-weight: bold;">🚚 Versand: NUR 2,50 €</p>
-        
         <form id="orderForm" action="https://formspree.io/f/mjgveeel" method="POST">
             <div class="product-card">
-                <img src="Candy-Cloud/saure_strips.jpg" alt="Strips">
+                <img src="Candy-Cloud/saure_strips.jpg">
                 <div style="flex-grow:1;"><strong>Saure Strips</strong><br>2,00 €</div>
-                <input type="checkbox" name="Produkt_Strips" value="Ja" class="item-check" data-price="2.00">
+                <input type="checkbox" name="Strips" value="Ja" class="item-check" data-price="2.00">
             </div>
             <div class="product-card">
-                <img src="prime.jpg" alt="Prime">
+                <img src="prime.jpg">
                 <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
-                <input type="checkbox" name="Produkt_Prime" value="Ja" class="item-check" data-price="3.50">
-            </div>
-            <div class="product-card">
-                <img src="takis.jpg" alt="Takis">
-                <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
-                <input type="checkbox" name="Produkt_Takis" value="Ja" class="item-check" data-price="2.50">
-            </div>
-
-            <hr>
-            <h3>Lieferdaten & Kontakt</h3>
-            <input type="text" name="Name" placeholder="Vor- und Nachname" required>
-            <input type="email" id="autoEmail" name="Email" readonly required style="background: #f9f9f9; color: #555;">
-            <input type="tel" name="Telefon" placeholder="Telefonnummer" required>
-            <input type="text" name="Strasse" placeholder="Straße und Hausnummer" required>
-            <div class="address-grid">
-                <input type="text" name="PLZ" placeholder="PLZ" required>
-                <input type="text" name="Ort" placeholder="Stadt / Ort" required>
+                <input type="checkbox" name="Prime" value="Ja" class="item-check" data-price="3.50">
             </div>
             
+            <hr>
+            <h3>Lieferdaten & Kontakt</h3>
+            <input type="text" name="Kunde" placeholder="Name" required>
+            <input type="email" id="autoEmail" name="Email" readonly required style="background:#f0f0f0;">
+            <input type="tel" name="Telefon" placeholder="Telefonnummer" required>
+            <input type="text" name="Strasse" placeholder="Straße / Hausnr." required>
+            <div class="address-grid">
+                <input type="text" name="PLZ" placeholder="PLZ" required>
+                <input type="text" name="Ort" placeholder="Ort" required>
+            </div>
             <input type="hidden" id="totalAmount" name="GESAMTSUMME">
             <button type="button" onclick="calculateAndSend()" class="buy-button">Bestellung abschicken</button>
         </form>
@@ -96,35 +80,26 @@
 
     <script>
         (function() { emailjs.init("G5J0iTvi3DSK0C6p9"); })();
-        let generatedCode;
-        let loginEmail;
-
+        let generatedCode, loginEmail;
         function sendCode() {
             const email = document.getElementById('userEmail').value;
-            if(!email) return alert("E-Mail vergessen!");
             loginEmail = email;
             generatedCode = Math.floor(100000 + Math.random() * 900000);
             emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: email, code: generatedCode })
-                .then(() => { alert("Code gesendet!"); document.getElementById('code-section').style.display = 'block'; });
+                .then(() => { document.getElementById('code-section').style.display = 'block'; });
         }
-
         function verifyCode() {
             if(document.getElementById('inputCode').value == generatedCode) {
                 document.getElementById('auth-gate').style.display = 'none';
                 document.getElementById('main-shop').style.display = 'block';
                 document.getElementById('autoEmail').value = loginEmail;
-            } else { alert("Code falsch!"); }
+            }
         }
-
         function calculateAndSend() {
             let summe = 2.50;
-            document.querySelectorAll('.item-check:checked').forEach(item => {
-                summe += parseFloat(item.getAttribute('data-price'));
-            });
+            document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
             document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
-            if(confirm("Bestellung abschicken? Gesamt: " + summe.toFixed(2) + " €")) {
-                document.getElementById('orderForm').submit();
-            }
+            document.getElementById('orderForm').submit();
         }
     </script>
 </body>
