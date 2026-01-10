@@ -39,24 +39,26 @@
             <div class="product-card">
                 <img src="Candy-Cloud/saure_strips.jpg" alt="Strips">
                 <div style="flex-grow:1;"><strong>Saure Strips</strong><br>2,00 €</div>
-                <input type="checkbox" name="Strips" value="Ja" class="item-check" data-price="2.00">
+                <input type="checkbox" name="Produkt_Strips" value="Ja" class="item-check" data-price="2.00">
             </div>
             <div class="product-card">
                 <img src="prime.jpg" alt="Prime">
                 <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
-                <input type="checkbox" name="Prime" value="Ja" class="item-check" data-price="3.50">
+                <input type="checkbox" name="Produkt_Prime" value="Ja" class="item-check" data-price="3.50">
             </div>
             <div class="product-card">
                 <img src="takis.jpg" alt="Takis">
                 <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
-                <input type="checkbox" name="Takis" value="Ja" class="item-check" data-price="2.50">
+                <input type="checkbox" name="Produkt_Takis" value="Ja" class="item-check" data-price="2.50">
             </div>
 
             <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
             
             <h3>Versanddaten</h3>
-            <input type="text" name="Kunde" placeholder="Vor- und Nachname" required>
-            <input type="text" name="Strasse" placeholder="Straße und Hausnummer" required>
+            <input type="text" name="Kunde_Name" placeholder="Vor- und Nachname" required>
+            <input type="email" id="hiddenEmailField" name="Kunde_Email" placeholder="E-Mail Adresse" readonly required>
+            <input type="tel" name="Kunde_Telefon" placeholder="Telefonnummer" required>
+            <input type="text" name="Strasse_Hausnummer" placeholder="Straße und Hausnummer" required>
             <div class="address-grid">
                 <input type="text" name="PLZ" placeholder="PLZ" required>
                 <input type="text" name="Ort" placeholder="Stadt / Ort" required>
@@ -73,10 +75,12 @@
         })();
 
         let generatedCode;
+        let savedUserEmail;
 
         function sendCode() {
             const email = document.getElementById('userEmail').value;
             if(!email) return alert("E-Mail vergessen!");
+            savedUserEmail = email; // E-Mail für später speichern
             generatedCode = Math.floor(100000 + Math.random() * 900000);
 
             emailjs.send("service_ce5qg71", "template_3ucxs1x", {
@@ -94,17 +98,24 @@
             if(document.getElementById('inputCode').value == generatedCode) {
                 document.getElementById('auth-gate').style.display = 'none';
                 document.getElementById('main-shop').style.display = 'block';
+                // Gespeicherte E-Mail in das Formular eintragen
+                document.getElementById('hiddenEmailField').value = savedUserEmail;
             } else { alert("Code falsch!"); }
         }
 
         function calculateAndSend() {
             let summe = 2.50; 
+            let anzahlGekauft = 0;
             document.querySelectorAll('.item-check:checked').forEach(item => {
                 summe += parseFloat(item.getAttribute('data-price'));
+                anzahlGekauft++;
             });
+
+            if(anzahlGekauft === 0) return alert("Bitte wähle mindestens ein Produkt aus!");
+
             document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
             
-            if(confirm("RECHNUNG:\nVersand: 2,50 €\nGesamt: " + summe.toFixed(2) + " €\n\nJetzt zahlungspflichtig bestellen?")) {
+            if(confirm("Zusammenfassung:\nVersand: 2,50 €\nGesamt: " + summe.toFixed(2) + " €\n\nJetzt zahlungspflichtig bestellen?")) {
                 document.getElementById('orderForm').submit();
             }
         }
