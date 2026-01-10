@@ -4,41 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candy Cloud Shop</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            text-align: center; padding: 20px; margin: 0; min-height: 100vh;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradient 15s ease infinite; text-align: center; padding: 20px; margin: 0; min-height: 100vh; }
         @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .shop-container { 
-            background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 20px; 
-            display: inline-block; max-width: 450px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            backdrop-filter: blur(5px); margin-top: 50px;
-        }
-        .product-card { 
-            border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; padding: 15px; 
-            display: flex; align-items: center; text-align: left; background: #fff; 
-        }
+        .shop-container { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 20px; display: inline-block; max-width: 450px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-top: 50px; }
+        .product-card { border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; padding: 15px; display: flex; align-items: center; text-align: left; background: #fff; }
         .product-card img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: contain; }
-        .price { color: #2e7d32; font-weight: bold; }
-        input[type="text"], input[type="email"] { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        .buy-button { 
-            background: #e73c7e; color: white; padding: 15px 30px; border: none; 
-            border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 15px;
-        }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .address-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+        .buy-button { background: #e73c7e; color: white; padding: 15px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        h3 { margin: 15px 0 5px 0; color: #333; text-align: left; font-size: 18px; }
     </style>
 </head>
 <body>
 
     <div id="auth-gate" class="shop-container">
-        <h2>🔐 Candy Cloud Login</h2>
+        <h2>🍭 Candy Cloud Login</h2>
+        <p>Gib deine E-Mail ein für den Login-Code:</p>
         <input type="email" id="userEmail" placeholder="Deine E-Mail Adresse">
-        <button onclick="sendCode()" class="buy-button">Code anfordern</button>
+        <button onclick="sendCode()" class="buy-button">Code per E-Mail senden</button>
+        
         <div id="code-section" style="display: none; margin-top: 20px;">
-            <input type="text" id="inputCode" placeholder="6-stelliger Code">
+            <input type="text" id="inputCode" placeholder="Code aus der E-Mail">
             <button onclick="verifyCode()" class="buy-button" style="background: #23d5ab;">Shop öffnen</button>
         </div>
     </div>
@@ -46,59 +34,77 @@
     <div id="main-shop" class="shop-container" style="display: none;">
         <h1>☁️ Candy Cloud ☁️</h1>
         <p style="background: #e8f5e9; padding: 10px; border-radius: 8px; color: #2e7d32; font-weight: bold;">🚚 Versand: NUR 2,50 €</p>
-
-        <form id="orderForm" action="https://formspree.io/f/DEINE_ID" method="POST">
+        
+        <form id="orderForm" action="https://formspree.io/f/mjgveeel" method="POST">
             <div class="product-card">
-                <img src="saure_strips.jpg" alt="Saure Strips">
-                <div style="flex-grow:1;"><strong>Saure Strips</strong><br><span class="price">2,00 €</span></div>
-                <input type="checkbox" name="Bestellung_Strips" value="2.00 €" class="item-check" data-price="2.00" style="width:20px;">
+                <img src="Candy-Cloud/saure_strips.jpg" alt="Strips">
+                <div style="flex-grow:1;"><strong>Saure Strips</strong><br>2,00 €</div>
+                <input type="checkbox" name="Strips" value="Ja" class="item-check" data-price="2.00">
             </div>
-
             <div class="product-card">
                 <img src="prime.jpg" alt="Prime">
-                <div style="flex-grow:1;"><strong>Prime Hydration</strong><br><span class="price">3,50 €</span></div>
-                <input type="checkbox" name="Bestellung_Prime" value="3.50 €" class="item-check" data-price="3.50" style="width:20px;">
+                <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
+                <input type="checkbox" name="Prime" value="Ja" class="item-check" data-price="3.50">
             </div>
-
             <div class="product-card">
                 <img src="takis.jpg" alt="Takis">
-                <div style="flex-grow:1;"><strong>Takis Fuego</strong><br><span class="price">4,50 €</span></div>
-                <input type="checkbox" name="Bestellung_Takis" value="4.50 €" class="item-check" data-price="4.50" style="width:20px;">
+                <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
+                <input type="checkbox" name="Takis" value="Ja" class="item-check" data-price="2.50">
             </div>
 
-            <input type="text" name="Kunden_Name" placeholder="Dein Name" required>
-            <input type="text" name="Adresse" placeholder="Straße, Hausnr, PLZ, Ort" required>
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
             
-            <input type="hidden" name="Versandkosten" value="2.50 €">
+            <h3>Versanddaten</h3>
+            <input type="text" name="Kunde" placeholder="Vor- und Nachname" required>
+            <input type="text" name="Strasse" placeholder="Straße und Hausnummer" required>
+            <div class="address-grid">
+                <input type="text" name="PLZ" placeholder="PLZ" required>
+                <input type="text" name="Ort" placeholder="Stadt / Ort" required>
+            </div>
+            
             <input type="hidden" id="totalAmount" name="GESAMTSUMME">
-
-            <button type="button" onclick="calculateAndSend()" class="buy-button">Rechnung prüfen & Kaufen</button>
+            <button type="button" onclick="calculateAndSend()" class="buy-button">Bestellung abschicken</button>
         </form>
     </div>
 
     <script>
+        (function() {
+            emailjs.init("G5J0iTvi3DSK0C6p9"); 
+        })();
+
         let generatedCode;
+
         function sendCode() {
+            const email = document.getElementById('userEmail').value;
+            if(!email) return alert("E-Mail vergessen!");
             generatedCode = Math.floor(100000 + Math.random() * 900000);
-            alert("BOT: Dein Login-Code ist: " + generatedCode);
-            document.getElementById('code-section').style.display = 'block';
+
+            emailjs.send("service_ce5qg71", "template_3ucxs1x", {
+                to_email: email,
+                code: generatedCode
+            }).then(() => {
+                alert("Erfolg! Der Code ist unterwegs in dein Postfach.");
+                document.getElementById('code-section').style.display = 'block';
+            }, (err) => {
+                alert("Fehler beim Senden: " + JSON.stringify(err));
+            });
         }
+
         function verifyCode() {
             if(document.getElementById('inputCode').value == generatedCode) {
                 document.getElementById('auth-gate').style.display = 'none';
                 document.getElementById('main-shop').style.display = 'block';
-            } else { alert("Falscher Code!"); }
+            } else { alert("Code falsch!"); }
         }
+
         function calculateAndSend() {
             let summe = 2.50; 
-            let selected = false;
             document.querySelectorAll('.item-check:checked').forEach(item => {
                 summe += parseFloat(item.getAttribute('data-price'));
-                selected = true;
             });
-            if(!selected) return alert("Wähle bitte erst ein Produkt aus!");
             document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
-            if(confirm("DEINE RECHNUNG:\n------------------\nVersand: 2,50 €\nGESAMT: " + summe.toFixed(2) + " €\n\nJetzt bestellen?")) {
+            
+            if(confirm("RECHNUNG:\nVersand: 2,50 €\nGesamt: " + summe.toFixed(2) + " €\n\nJetzt zahlungspflichtig bestellen?")) {
                 document.getElementById('orderForm').submit();
             }
         }
