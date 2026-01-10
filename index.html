@@ -16,6 +16,7 @@
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
+            padding: 20px;
         }
         @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .shop-container { 
@@ -23,7 +24,7 @@
             padding: 30px; 
             border-radius: 20px; 
             max-width: 450px; 
-            width: 90%; 
+            width: 100%; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
             text-align: center;
         }
@@ -32,33 +33,42 @@
         .product-card img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: contain; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
         .address-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
-        .buy-button { background: #e73c7e; color: white; padding: 15px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; }
+        .buy-button { background: #e73c7e; color: white; padding: 15px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
+
     <div id="auth-gate" class="shop-container">
         <h2>🍭 Candy Cloud Login</h2>
-        <input type="email" id="userEmail" placeholder="E-Mail für Code">
+        <input type="email" id="userEmail" placeholder="Deine E-Mail">
         <button onclick="sendCode()" class="buy-button">Code senden</button>
         <div id="code-section" style="display: none; margin-top: 20px;">
-            <input type="text" id="inputCode" placeholder="Code eingeben">
+            <input type="text" id="inputCode" placeholder="Code aus der Mail">
             <button onclick="verifyCode()" class="buy-button" style="background: #23d5ab;">Shop öffnen</button>
         </div>
     </div>
 
     <div id="main-shop" class="shop-container" style="display: none;">
         <img src="Candy-Cloud/saure_strips.jpg" class="logo-header" alt="Logo">
-        <h1>Candy Cloud</h1>
+        <h1>☁️ Candy Cloud ☁️</h1>
         <form id="orderForm" action="https://formspree.io/f/mjgveeel" method="POST">
             <div class="product-card">
                 <img src="Candy-Cloud/saure_strips.jpg">
                 <div style="flex-grow:1;"><strong>Saure Strips</strong><br>2,00 €</div>
                 <input type="checkbox" name="Strips" value="Ja" class="item-check" data-price="2.00">
             </div>
+            <div class="product-card">
+                <img src="prime.jpg">
+                <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
+                <input type="checkbox" name="Prime" value="Ja" class="item-check" data-price="3.50">
+            </div>
+            
+            <hr>
+            <h3>Lieferdaten & Kontakt</h3>
             <input type="text" name="Kunde" placeholder="Name" required>
             <input type="email" id="autoEmail" name="Email" readonly required style="background:#f0f0f0;">
             <input type="tel" name="Telefon" placeholder="Telefonnummer" required>
-            <input type="text" name="Strasse" placeholder="Straße" required>
+            <input type="text" name="Strasse" placeholder="Straße / Hausnr." required>
             <div class="address-grid">
                 <input type="text" name="PLZ" placeholder="PLZ" required>
                 <input type="text" name="Ort" placeholder="Ort" required>
