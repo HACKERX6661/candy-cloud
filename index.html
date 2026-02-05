@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candy Cloud Shop</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☁️</text></svg>">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍭</text></svg>">
+    
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradient 15s ease infinite; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
@@ -68,7 +70,7 @@
                 </div>
                 <input type="hidden" id="totalAmount" name="GESAMTSUMME">
                 <button type="button" id="submitBtn" onclick="calculateAndSend()" class="buy-button">Mit PayPal bezahlen</button>
-                <button type="button" onclick="prevStep()" style="background:none; border:none; color:#666; cursor:pointer; margin-top:10px;">← Zurück zur Auswahl</button>
+                <p onclick="prevStep()" style="cursor:pointer; color:#666; margin-top:15px; font-size:14px;">← Zurück zur Auswahl</p>
             </div>
         </form>
     </div>
