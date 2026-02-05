@@ -112,7 +112,7 @@
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
             document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
             
-            if(confirm("Bestellung abschicken? Danach wirst du zu PayPal (AlenaGutsol) geleitet.")) {
+            if(confirm("Bestellung abschicken für " + summe.toFixed(2) + " €? Du wirst danach zu PayPal weitergeleitet.")) {
                 document.getElementById('orderForm').submit();
             }
         }
