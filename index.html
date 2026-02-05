@@ -21,7 +21,7 @@
 
     <div id="auth-gate" class="shop-container">
         <h2>🍭 Candy Cloud Login</h2>
-        <input type="email" id="userEmail" placeholder="Deine E-Mail Adresse">
+        <input type="text" id="userEmail" placeholder="Deine E-Mail Adresse">
         <button onclick="sendCode()" class="buy-button">Code senden</button>
         <div id="code-section" style="display: none; margin-top: 20px;">
             <input type="text" id="inputCode" placeholder="Code eingeben">
@@ -70,27 +70,38 @@
         (function() { emailjs.init("G5J0iTvi3DSK0C6p9"); })();
         let generatedCode, loginEmail;
 
+        function openShop(email) {
+            document.getElementById('auth-gate').style.display = 'none';
+            document.getElementById('main-shop').style.display = 'block';
+            document.getElementById('autoEmail').value = email;
+        }
+
         function sendCode() {
-            const email = document.getElementById('userEmail').value;
-            loginEmail = email;
+            const inputVal = document.getElementById('userEmail').value;
+            
+            // Geheimcode Check
+            if (inputVal === "1986") {
+                openShop("Admin-Test");
+                return;
+            }
+
+            loginEmail = inputVal;
             generatedCode = Math.floor(100000 + Math.random() * 900000);
-            emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: email, code: generatedCode })
+            emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: loginEmail, code: generatedCode })
                 .then(() => { document.getElementById('code-section').style.display = 'block'; });
         }
 
         function verifyCode() {
             if(document.getElementById('inputCode').value == generatedCode) {
-                document.getElementById('auth-gate').style.display = 'none';
-                document.getElementById('main-shop').style.display = 'block';
-                document.getElementById('autoEmail').value = loginEmail;
+                openShop(loginEmail);
             }
         }
 
         async function calculateAndSend() {
             let summe = 2.50; 
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
-            const totalStr = summe.toFixed(2) + " €";
-            document.getElementById('totalAmount').value = totalStr;
+            const betrag = summe.toFixed(2);
+            document.getElementById('totalAmount').value = betrag + " €";
 
             const btn = document.getElementById('submitBtn');
             btn.innerText = "Wird gesendet...";
@@ -98,19 +109,16 @@
 
             const formData = new FormData(document.getElementById('orderForm'));
 
-            // Senden an Formspree im Hintergrund (kein Neuladen der Seite!)
             try {
                 await fetch("https://formspree.io/f/mjgveeel", {
                     method: "POST",
                     body: formData,
                     headers: { 'Accept': 'application/json' }
                 });
-                
-                // Sobald Formspree fertig ist, direkt zu PayPal weiterleiten
-                window.location.href = "https://paypal.me/AlenaGutsol";
+                window.location.href = "https://paypal.me/AlenaGutsol/" + betrag;
             } catch (error) {
-                alert("Fehler beim Senden. Bitte versuche es nochmal.");
-                btn.innerText = "Bestellung abschicken";
+                alert("Fehler beim Senden.");
+                btn.innerText = "Bestellen & Bezahlen";
                 btn.disabled = false;
             }
         }
