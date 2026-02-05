@@ -40,18 +40,21 @@
 
     <div id="auth-gate" class="shop-container">
         <h2>🍭 Candy Cloud Login</h2>
-        <input type="email" id="userEmail" placeholder="Deine E-Mail">
+        <input type="email" id="userEmail" placeholder="Deine E-Mail Adresse">
         <button onclick="sendCode()" class="buy-button">Code senden</button>
         <div id="code-section" style="display: none; margin-top: 20px;">
-            <input type="text" id="inputCode" placeholder="Code aus der Mail">
+            <input type="text" id="inputCode" placeholder="Code eingeben">
             <button onclick="verifyCode()" class="buy-button" style="background: #23d5ab;">Shop öffnen</button>
         </div>
     </div>
 
     <div id="main-shop" class="shop-container" style="display: none;">
         <img src="Candy-Cloud/saure_strips.jpg" class="logo-header" alt="Logo">
-        <h1>☁️ Candy Cloud ☁️</h1>
+        <h1>Candy Cloud</h1>
+        
         <form id="orderForm" action="https://formspree.io/f/mjgveeel" method="POST">
+            <input type="hidden" name="_next" value="https://paypal.me/AlenaGutsol">
+
             <div class="product-card">
                 <img src="Candy-Cloud/saure_strips.jpg">
                 <div style="flex-grow:1;"><strong>Saure Strips</strong><br>2,00 €</div>
@@ -62,25 +65,32 @@
                 <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
                 <input type="checkbox" name="Prime" value="Ja" class="item-check" data-price="3.50">
             </div>
-            
+            <div class="product-card">
+                <img src="takis.jpg">
+                <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
+                <input type="checkbox" name="Takis" value="Ja" class="item-check" data-price="2.50">
+            </div>
+
             <hr>
-            <h3>Lieferdaten & Kontakt</h3>
+            <h3>Lieferdaten</h3>
             <input type="text" name="Kunde" placeholder="Name" required>
-            <input type="email" id="autoEmail" name="Email" readonly required style="background:#f0f0f0;">
+            <input type="email" id="autoEmail" name="Email" readonly required style="background: #f9f9f9;">
             <input type="tel" name="Telefon" placeholder="Telefonnummer" required>
-            <input type="text" name="Strasse" placeholder="Straße / Hausnr." required>
+            <input type="text" name="Strasse" placeholder="Straße" required>
             <div class="address-grid">
                 <input type="text" name="PLZ" placeholder="PLZ" required>
                 <input type="text" name="Ort" placeholder="Ort" required>
             </div>
+            
             <input type="hidden" id="totalAmount" name="GESAMTSUMME">
-            <button type="button" onclick="calculateAndSend()" class="buy-button">Bestellung abschicken</button>
+            <button type="button" onclick="calculateAndSend()" class="buy-button">Bestellen & Bezahlen</button>
         </form>
     </div>
 
     <script>
         (function() { emailjs.init("G5J0iTvi3DSK0C6p9"); })();
         let generatedCode, loginEmail;
+
         function sendCode() {
             const email = document.getElementById('userEmail').value;
             loginEmail = email;
@@ -88,6 +98,7 @@
             emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: email, code: generatedCode })
                 .then(() => { document.getElementById('code-section').style.display = 'block'; });
         }
+
         function verifyCode() {
             if(document.getElementById('inputCode').value == generatedCode) {
                 document.getElementById('auth-gate').style.display = 'none';
@@ -95,11 +106,15 @@
                 document.getElementById('autoEmail').value = loginEmail;
             }
         }
+
         function calculateAndSend() {
-            let summe = 2.50;
+            let summe = 2.50; 
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
             document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
-            document.getElementById('orderForm').submit();
+            
+            if(confirm("Bestellung abschicken? Danach wirst du zu PayPal (AlenaGutsol) geleitet.")) {
+                document.getElementById('orderForm').submit();
+            }
         }
     </script>
 </body>
