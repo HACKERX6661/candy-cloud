@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candy Cloud Shop</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍭</text></svg>">
+    
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradient 15s ease infinite; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
@@ -78,13 +81,10 @@
 
         function sendCode() {
             const inputVal = document.getElementById('userEmail').value;
-            
-            // Geheimcode Check
             if (inputVal === "1986") {
                 openShop("Admin-Test");
                 return;
             }
-
             loginEmail = inputVal;
             generatedCode = Math.floor(100000 + Math.random() * 900000);
             emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: loginEmail, code: generatedCode })
@@ -107,12 +107,10 @@
             btn.innerText = "Wird gesendet...";
             btn.disabled = true;
 
-            const formData = new FormData(document.getElementById('orderForm'));
-
             try {
                 await fetch("https://formspree.io/f/mjgveeel", {
                     method: "POST",
-                    body: formData,
+                    body: new FormData(document.getElementById('orderForm')),
                     headers: { 'Accept': 'application/json' }
                 });
                 window.location.href = "https://paypal.me/AlenaGutsol/" + betrag;
