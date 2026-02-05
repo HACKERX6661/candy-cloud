@@ -53,7 +53,7 @@
         <h1>Candy Cloud</h1>
         
         <form id="orderForm" action="https://formspree.io/f/mjgveeel" method="POST">
-            <input type="hidden" name="_next" value="https://paypal.me/DEINPAYPALNAME">
+            <input type="hidden" name="_next" value="https://paypal.me/AlenaGutsol">
 
             <div class="product-card">
                 <img src="Candy-Cloud/saure_strips.jpg">
@@ -112,7 +112,7 @@
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
             document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
             
-            if(confirm("Bestellung abschicken für " + summe.toFixed(2) + " €?")) {
+            if(confirm("Bestellung abschicken für " + summe.toFixed(2) + " €? Du wirst danach zu PayPal weitergeleitet.")) {
                 document.getElementById('orderForm').submit();
             }
         }
