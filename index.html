@@ -9,17 +9,21 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradient 15s ease infinite; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
         @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .shop-container { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 20px; max-width: 450px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; }
+        .shop-container { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 20px; max-width: 450px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; position: relative; }
         .graz-banner { background: #ff4444; color: white; padding: 5px; font-weight: bold; border-radius: 10px; margin-bottom: 15px; font-size: 14px; }
-        .product-card { border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; padding: 15px; display: flex; align-items: center; text-align: left; background: #fff; }
+        .product-card { border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; padding: 15px; display: flex; align-items: center; text-align: left; background: #fff; position: relative; transition: 0.3s; }
         .product-card img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: contain; }
+        .product-card.sold-out-mode { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
+        .sold-out-badge { position: absolute; top: 5px; right: 5px; background: red; color: white; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
         .buy-button { background: #e73c7e; color: white; padding: 15px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
         .step { display: none; }
         .step.active { display: block; }
         #agb-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; color: white; overflow-y: auto; padding: 40px; box-sizing: border-box; }
-        .card-save-box { display: flex; align-items: center; font-size: 12px; color: #666; margin-top: 5px; text-align: left; }
-        .card-save-box input { width: auto; margin-right: 10px; }
+        
+        /* Godmode Styling */
+        #godmode-panel { display: none; background: #333; color: #0f0; padding: 10px; border-radius: 10px; margin-bottom: 15px; font-family: monospace; font-size: 12px; text-align: left; border: 2px solid #0f0; }
+        .admin-btn { background: #0f0; color: #000; border: none; padding: 5px; cursor: pointer; font-weight: bold; font-size: 10px; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -27,7 +31,7 @@
     <div id="agb-modal">
         <div style="max-width: 600px; margin: auto; text-align: left;">
             <h2>AGB Candy Cloud Graz</h2>
-            <p>Lieferung nur PLZ 8010-8055. Kleinunternehmerregelung § 6 Abs. 1 Z 27 UStG. Zahlung via PayPal/Karte an AlenaGutsol. Karten können sicher für spätere Einkäufe gespeichert werden.</p>
+            <p>Lieferung nur PLZ 8010-8055. Kleinunternehmerregelung § 6 Abs. 1 Z 27 UStG. Zahlung via PayPal/Karte an AlenaGutsol.</p>
             <button onclick="closeAGB()" class="buy-button">Schließen</button>
         </div>
     </div>
@@ -54,23 +58,27 @@
     </div>
 
     <div id="main-shop" class="shop-container" style="display: none;">
+        <div id="godmode-panel">⚠️ GODMODE AKTIVIERT: Produkte verwalten</div>
         <h1>Candy Cloud</h1>
         <form id="orderForm">
             <div id="step1" class="step active">
-                <div class="product-card">
+                <div class="product-card" id="prod1">
                     <img src="Candy-Cloud/saure_strips.jpg">
-                    <div style="flex-grow:1;"><strong>Saure Strips</strong><br>2,00 €</div>
+                    <div style="flex-grow:1;"><strong>Saure Strips</strong><br><span class="price-tag">2.00</span> €</div>
                     <input type="checkbox" name="Strips" value="Ja" class="item-check" data-price="2.00">
+                    <button type="button" class="admin-btn" onclick="toggleSoldOut('prod1')" style="display:none;">SOLD OUT</button>
                 </div>
-                <div class="product-card">
+                <div class="product-card" id="prod2">
                     <img src="Candy-Cloud/prime.jpg">
-                    <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
+                    <div style="flex-grow:1;"><strong>Prime Drink</strong><br><span class="price-tag">3.50</span> €</div>
                     <input type="checkbox" name="Prime" value="Ja" class="item-check" data-price="3.50">
+                    <button type="button" class="admin-btn" onclick="toggleSoldOut('prod2')" style="display:none;">SOLD OUT</button>
                 </div>
-                <div class="product-card">
+                <div class="product-card" id="prod3">
                     <img src="Candy-Cloud/takis.jpg">
-                    <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
+                    <div style="flex-grow:1;"><strong>Takis Fuego</strong><br><span class="price-tag">2.50</span> €</div>
                     <input type="checkbox" name="Takis" value="Ja" class="item-check" data-price="2.50">
+                    <button type="button" class="admin-btn" onclick="toggleSoldOut('prod3')" style="display:none;">SOLD OUT</button>
                 </div>
                 <button type="button" onclick="nextStep()" class="buy-button">Weiter</button>
             </div>
@@ -81,12 +89,6 @@
                 <input type="email" id="autoEmail" name="Email" readonly required style="background: #eee;">
                 <input type="text" name="Strasse" placeholder="Straße" required>
                 <input type="number" id="plzInput" name="PLZ" placeholder="PLZ (8010-8055)" required>
-                
-                <div class="card-save-box">
-                    <input type="checkbox" checked>
-                    <span>Karte für zukünftige Einkäufe sicher speichern 🔒</span>
-                </div>
-
                 <input type="hidden" id="totalAmount" name="GESAMTSUMME">
                 <button type="button" id="submitBtn" onclick="processPayment()" class="buy-button">Jetzt Bezahlen</button>
             </div>
@@ -95,7 +97,7 @@
 
     <script>
         (function() { emailjs.init("G5J0iTvi3DSK0C6p9"); })();
-        let currentCaptcha, generatedCode, loginEmail;
+        let currentCaptcha, generatedCode, loginEmail, isAdmin = false;
 
         function genCaptcha() {
             currentCaptcha = Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -108,24 +110,19 @@
 
         function checkCaptcha() {
             const input = document.getElementById('captchaInput').value;
-            const check = document.getElementById('agbCheck').checked;
-            
-            // ADMIN-CHECK: 1986 funktioniert immer
-            if(input === "1986") {
-                document.getElementById('captcha-gate').style.display = 'none';
-                document.getElementById('auth-gate').style.display = 'block';
-                return;
-            }
+            if(input === "1986") { isAdmin = true; skipToAuth(); return; }
+            if(input.toUpperCase() === currentCaptcha && document.getElementById('agbCheck').checked) { skipToAuth(); }
+            else { alert("Fehler!"); genCaptcha(); }
+        }
 
-            if(input.toUpperCase() === currentCaptcha && check) {
-                document.getElementById('captcha-gate').style.display = 'none';
-                document.getElementById('auth-gate').style.display = 'block';
-            } else { alert("Fehler! Code falsch oder AGB nicht akzeptiert."); genCaptcha(); }
+        function skipToAuth() {
+            document.getElementById('captcha-gate').style.display = 'none';
+            document.getElementById('auth-gate').style.display = 'block';
         }
 
         function sendCode() {
             loginEmail = document.getElementById('userEmail').value;
-            if(loginEmail === "1986") { openShop("Admin"); return; }
+            if(loginEmail === "1986" || isAdmin) { isAdmin = true; openShop("Admin"); return; }
             generatedCode = Math.floor(100000 + Math.random() * 900000);
             emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: loginEmail, code: generatedCode })
                 .then(() => { document.getElementById('code-section').style.display = 'block'; });
@@ -139,6 +136,24 @@
             document.getElementById('auth-gate').style.display = 'none';
             document.getElementById('main-shop').style.display = 'block';
             document.getElementById('autoEmail').value = email;
+            if(isAdmin) {
+                document.getElementById('godmode-panel').style.display = 'block';
+                document.querySelectorAll('.admin-btn').forEach(b => b.style.display = 'block');
+            }
+        }
+
+        function toggleSoldOut(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('sold-out-mode');
+            if(el.classList.contains('sold-out-mode')) {
+                const badge = document.createElement('div');
+                badge.className = 'sold-out-badge';
+                badge.innerText = 'AUSVERKAUFT';
+                el.appendChild(badge);
+            } else {
+                const badge = el.querySelector('.sold-out-badge');
+                if(badge) badge.remove();
+            }
         }
 
         function nextStep() { document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active'); }
@@ -146,20 +161,12 @@
         async function processPayment() {
             const plz = document.getElementById('plzInput').value;
             if(plz < 8010 || plz > 8055) { alert("Nur Graz!"); return; }
-
             let summe = 2.50; 
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
             const betrag = summe.toFixed(2);
             document.getElementById('totalAmount').value = betrag + " €";
-
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Sende Daten...";
-            btn.disabled = true;
-
-            try {
-                await fetch("https://formspree.io/f/mjgveeel", { method: "POST", body: new FormData(document.getElementById('orderForm')), headers: {'Accept': 'application/json'} });
-                window.location.href = "https://paypal.me/AlenaGutsol/" + betrag;
-            } catch (e) { alert("Fehler!"); btn.disabled = false; }
+            await fetch("https://formspree.io/f/mjgveeel", { method: "POST", body: new FormData(document.getElementById('orderForm')), headers: {'Accept': 'application/json'} });
+            window.location.href = "https://paypal.me/AlenaGutsol/" + betrag;
         }
     </script>
 </body>
