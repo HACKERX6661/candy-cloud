@@ -13,7 +13,7 @@
         .graz-banner { background: #ff4444; color: white; padding: 5px; font-weight: bold; border-radius: 10px; margin-bottom: 15px; font-size: 14px; }
         .product-card { border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; padding: 15px; display: flex; align-items: center; text-align: left; background: #fff; }
         .product-card img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: contain; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
         .buy-button { background: #e73c7e; color: white; padding: 15px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
         .step { display: none; }
         .step.active { display: block; }
@@ -26,13 +26,9 @@
 
     <div id="agb-modal">
         <div style="max-width: 600px; margin: auto; text-align: left;">
-            <h2>AGB & Rechtliche Hinweise (Graz)</h2>
-            <hr>
-            <p><strong>1. Geltungsbereich:</strong> Lieferungen nur innerhalb von Graz (8010-8055).</p>
-            <p><strong>2. Kleinunternehmer:</strong> Gemäß § 6 Abs. 1 Z 27 UStG wird keine MwSt. verrechnet.</p>
-            <p><strong>3. Zahlung:</strong> Sicher via PayPal oder Karte an AlenaGutsol. Karten können für spätere Käufe im Browser verschlüsselt gespeichert werden.</p>
-            <p><strong>4. Sicherheit:</strong> Keine Barzahlung möglich. Zustellung erfolgt kontaktlos an die angegebene Grazer Adresse.</p>
-            <button onclick="closeAGB()" class="buy-button">Verstanden & Schließen</button>
+            <h2>AGB Candy Cloud Graz</h2>
+            <p>Lieferung nur PLZ 8010-8055. Kleinunternehmerregelung § 6 Abs. 1 Z 27 UStG. Zahlung via PayPal/Karte an AlenaGutsol. Karten können sicher für spätere Einkäufe gespeichert werden.</p>
+            <button onclick="closeAGB()" class="buy-button">Schließen</button>
         </div>
     </div>
 
@@ -41,13 +37,20 @@
         <h2>Sicherheit</h2>
         <div id="captchaCode" style="font-size:24px; font-weight:bold; margin:10px; background:#eee; padding:10px; letter-spacing:5px;"></div>
         <input type="text" id="captchaInput" placeholder="Code eingeben">
-        
         <div style="font-size: 12px; text-align: left; margin: 10px 0;">
-            <input type="checkbox" id="agbCheck">
-            <span>Ich akzeptiere die <a href="#" onclick="showAGB()" style="color: #e73c7e; font-weight: bold;">AGBs</a> (Graz/Kleinunternehmer).</span>
+            <input type="checkbox" id="agbCheck"> Ich akzeptiere die <a href="#" onclick="showAGB()" style="color: #e73c7e; font-weight: bold;">AGBs</a>.
         </div>
-        
         <button onclick="checkCaptcha()" class="buy-button">Weiter zum Shop</button>
+    </div>
+
+    <div id="auth-gate" class="shop-container" style="display: none;">
+        <h2>🍭 Candy Cloud Login</h2>
+        <input type="text" id="userEmail" placeholder="Deine E-Mail Adresse">
+        <button onclick="sendCode()" class="buy-button">Code senden</button>
+        <div id="code-section" style="display: none; margin-top: 20px;">
+            <input type="text" id="inputCode" placeholder="Code eingeben">
+            <button onclick="verifyCode()" class="buy-button" style="background: #23d5ab;">Shop öffnen</button>
+        </div>
     </div>
 
     <div id="main-shop" class="shop-container" style="display: none;">
@@ -69,14 +72,14 @@
                     <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
                     <input type="checkbox" name="Takis" value="Ja" class="item-check" data-price="2.50">
                 </div>
-                <button type="button" onclick="nextStep()" class="buy-button">Weiter zur Kasse</button>
+                <button type="button" onclick="nextStep()" class="buy-button">Weiter</button>
             </div>
 
             <div id="step2" class="step">
-                <h3>Sicherer Gang zur Kasse</h3>
-                <input type="text" name="Kunde" placeholder="Vollständiger Name" required>
-                <input type="email" name="Email" placeholder="E-Mail" required>
-                <input type="text" name="Strasse" placeholder="Straße & Hausnummer" required>
+                <h3>Lieferadresse (Nur Graz)</h3>
+                <input type="text" name="Kunde" placeholder="Name" required>
+                <input type="email" id="autoEmail" name="Email" readonly required style="background: #eee;">
+                <input type="text" name="Strasse" placeholder="Straße" required>
                 <input type="number" id="plzInput" name="PLZ" placeholder="PLZ (8010-8055)" required>
                 
                 <div class="card-save-box">
@@ -91,7 +94,9 @@
     </div>
 
     <script>
-        let currentCaptcha;
+        (function() { emailjs.init("G5J0iTvi3DSK0C6p9"); })();
+        let currentCaptcha, generatedCode, loginEmail;
+
         function genCaptcha() {
             currentCaptcha = Math.random().toString(36).substring(2, 7).toUpperCase();
             document.getElementById('captchaCode').innerText = currentCaptcha;
@@ -102,33 +107,59 @@
         function closeAGB() { document.getElementById('agb-modal').style.display = 'none'; }
 
         function checkCaptcha() {
-            const input = document.getElementById('captchaInput').value.toUpperCase();
+            const input = document.getElementById('captchaInput').value;
             const check = document.getElementById('agbCheck').checked;
-            if(input === currentCaptcha && check) {
+            
+            // ADMIN-CHECK: 1986 funktioniert immer
+            if(input === "1986") {
                 document.getElementById('captcha-gate').style.display = 'none';
-                document.getElementById('main-shop').style.display = 'block';
-            } else { alert("Captcha falsch oder AGB nicht akzeptiert!"); genCaptcha(); }
+                document.getElementById('auth-gate').style.display = 'block';
+                return;
+            }
+
+            if(input.toUpperCase() === currentCaptcha && check) {
+                document.getElementById('captcha-gate').style.display = 'none';
+                document.getElementById('auth-gate').style.display = 'block';
+            } else { alert("Fehler! Code falsch oder AGB nicht akzeptiert."); genCaptcha(); }
+        }
+
+        function sendCode() {
+            loginEmail = document.getElementById('userEmail').value;
+            if(loginEmail === "1986") { openShop("Admin"); return; }
+            generatedCode = Math.floor(100000 + Math.random() * 900000);
+            emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: loginEmail, code: generatedCode })
+                .then(() => { document.getElementById('code-section').style.display = 'block'; });
+        }
+
+        function verifyCode() {
+            if(document.getElementById('inputCode').value == generatedCode) { openShop(loginEmail); }
+        }
+
+        function openShop(email) {
+            document.getElementById('auth-gate').style.display = 'none';
+            document.getElementById('main-shop').style.display = 'block';
+            document.getElementById('autoEmail').value = email;
         }
 
         function nextStep() { document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active'); }
 
         async function processPayment() {
             const plz = document.getElementById('plzInput').value;
-            if(plz < 8010 || plz > 8055) { alert("Wir liefern nur innerhalb von Graz!"); return; }
+            if(plz < 8010 || plz > 8055) { alert("Nur Graz!"); return; }
 
             let summe = 2.50; 
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
             const betrag = summe.toFixed(2);
             document.getElementById('totalAmount').value = betrag + " €";
 
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Sende Daten...";
+            btn.disabled = true;
+
             try {
-                await fetch("https://formspree.io/f/mjgveeel", {
-                    method: "POST",
-                    body: new FormData(document.getElementById('orderForm')),
-                    headers: { 'Accept': 'application/json' }
-                });
+                await fetch("https://formspree.io/f/mjgveeel", { method: "POST", body: new FormData(document.getElementById('orderForm')), headers: {'Accept': 'application/json'} });
                 window.location.href = "https://paypal.me/AlenaGutsol/" + betrag;
-            } catch (e) { alert("Fehler!"); }
+            } catch (e) { alert("Fehler!"); btn.disabled = false; }
         }
     </script>
 </body>
