@@ -41,11 +41,9 @@
             <h3>3. Bezahlung</h3>
             <p>Die Zahlung erfolgt ausschließlich per PayPal an AlenaGutsol. Erst nach Zahlungseingang wird die Ware versendet oder zur Abholung vorbereitet.</p>
             <h3>4. Lieferung & Versand</h3>
-            <p>Der Versand erfolgt innerhalb Österreichs. Lieferzeiten können variieren. Wir haften nicht für Verzögerungen durch den Versanddienstleister.</p>
+            <p>Der Versand erfolgt innerhalb Österreichs. Lieferzeiten können variieren.</p>
             <h3>5. Jugendschutz</h3>
-            <p>Mit dem Akzeptieren bestätigst du, dass du alt genug bist, um Online-Käufe zu tätigen oder die Erlaubnis deiner Eltern hast.</p>
-            <h3>6. Widerrufsrecht</h3>
-            <p>Da es sich um Lebensmittel handelt, ist ein Widerruf nach Anbruch der Versiegelung oder bei Verderblichkeit ausgeschlossen.</p>
+            <p>Mit dem Akzeptieren bestätigst du, dass du alt genug bist oder die Erlaubnis deiner Eltern hast.</p>
             <br>
             <button onclick="closeAGB()" class="buy-button">Verstanden & Schließen</button>
         </div>
@@ -53,13 +51,13 @@
 
     <div id="captcha-gate" class="shop-container">
         <h2>🔒 Sicherheitssperre</h2>
-        <p>Bitte löse das Captcha und akzeptiere die AGB:</p>
+        <p>Captcha lösen und AGB akzeptieren:</p>
         <div id="captchaCode" class="captcha-box"></div>
         <input type="text" id="captchaInput" placeholder="Code eingeben">
         
         <div class="agb-text">
             <input type="checkbox" id="agbCheck">
-            <span>Ich akzeptiere die <a href="#" onclick="showAGB()" style="color: #e73c7e; text-decoration: underline;">AGBs</a> und rechtlichen Hinweise für Österreich.</span>
+            <span>Ich akzeptiere die <a href="#" onclick="showAGB()" style="color: #e73c7e; text-decoration: underline;">AGBs</a> (Graz, Österreich).</span>
         </div>
         
         <button onclick="checkCaptcha()" class="buy-button">Weiter zum Login</button>
@@ -86,13 +84,11 @@
                     <input type="checkbox" name="Strips" value="Ja" class="item-check" data-price="2.00">
                 </div>
                 <div class="product-card">
-                    <img src="prime.jpg">
-                    <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
+                    <img src="Candy-Cloud/prime.jpg"> <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
                     <input type="checkbox" name="Prime" value="Ja" class="item-check" data-price="3.50">
                 </div>
                 <div class="product-card">
-                    <img src="takis.jpg">
-                    <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
+                    <img src="Candy-Cloud/takis.jpg"> <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
                     <input type="checkbox" name="Takis" value="Ja" class="item-check" data-price="2.50">
                 </div>
                 <button type="button" onclick="nextStep()" class="buy-button">Weiter zur Adresse</button>
@@ -135,7 +131,7 @@
                 document.getElementById('captcha-gate').style.display = 'none';
                 document.getElementById('auth-gate').style.display = 'block';
             } else {
-                alert("Bitte Captcha lösen und AGB akzeptieren!");
+                alert("Fehler!");
                 genCaptcha();
             }
         }
