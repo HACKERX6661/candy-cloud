@@ -17,23 +17,40 @@
         .buy-button { background: #e73c7e; color: white; padding: 15px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
         .step { display: none; }
         .step.active { display: block; }
+        #agb-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; color: white; overflow-y: auto; padding: 40px; box-sizing: border-box; }
         .card-save-box { display: flex; align-items: center; font-size: 12px; color: #666; margin-top: 5px; text-align: left; }
         .card-save-box input { width: auto; margin-right: 10px; }
     </style>
 </head>
 <body>
 
+    <div id="agb-modal">
+        <div style="max-width: 600px; margin: auto; text-align: left;">
+            <h2>AGB & Rechtliche Hinweise (Graz)</h2>
+            <hr>
+            <p><strong>1. Geltungsbereich:</strong> Lieferungen nur innerhalb von Graz (8010-8055).</p>
+            <p><strong>2. Kleinunternehmer:</strong> Gemäß § 6 Abs. 1 Z 27 UStG wird keine MwSt. verrechnet.</p>
+            <p><strong>3. Zahlung:</strong> Sicher via PayPal oder Karte an AlenaGutsol. Karten können für spätere Käufe im Browser verschlüsselt gespeichert werden.</p>
+            <p><strong>4. Sicherheit:</strong> Keine Barzahlung möglich. Zustellung erfolgt kontaktlos an die angegebene Grazer Adresse.</p>
+            <button onclick="closeAGB()" class="buy-button">Verstanden & Schließen</button>
+        </div>
+    </div>
+
     <div id="captcha-gate" class="shop-container">
         <div class="graz-banner">📍 NUR GRAZ (8010-8055)</div>
         <h2>Sicherheit</h2>
         <div id="captchaCode" style="font-size:24px; font-weight:bold; margin:10px; background:#eee; padding:10px; letter-spacing:5px;"></div>
-        <input type="text" id="captchaInput" placeholder="Captcha-Code">
-        <label style="font-size:12px;"><input type="checkbox" id="agbCheck"> AGB akzeptieren (Graz/Kleinunternehmer)</label>
+        <input type="text" id="captchaInput" placeholder="Code eingeben">
+        
+        <div style="font-size: 12px; text-align: left; margin: 10px 0;">
+            <input type="checkbox" id="agbCheck">
+            <span>Ich akzeptiere die <a href="#" onclick="showAGB()" style="color: #e73c7e; font-weight: bold;">AGBs</a> (Graz/Kleinunternehmer).</span>
+        </div>
+        
         <button onclick="checkCaptcha()" class="buy-button">Weiter zum Shop</button>
     </div>
 
     <div id="main-shop" class="shop-container" style="display: none;">
-        <div class="graz-banner">Zustellung nur in Graz!</div>
         <h1>Candy Cloud</h1>
         <form id="orderForm">
             <div id="step1" class="step active">
@@ -60,23 +77,15 @@
                 <input type="text" name="Kunde" placeholder="Vollständiger Name" required>
                 <input type="email" name="Email" placeholder="E-Mail" required>
                 <input type="text" name="Strasse" placeholder="Straße & Hausnummer" required>
-                <input type="number" id="plzInput" name="PLZ" placeholder="PLZ (Graz)" required min="8010" max="8055">
+                <input type="number" id="plzInput" name="PLZ" placeholder="PLZ (8010-8055)" required>
                 
-                <div style="text-align: left; margin-top: 15px;">
-                    <label style="font-weight: bold; font-size: 14px;">Zahlungsmethode:</label>
-                    <select id="payMethod">
-                        <option value="card">Kredit- oder Debitkarte</option>
-                        <option value="paypal">Direkt mit PayPal</option>
-                    </select>
-                </div>
-
                 <div class="card-save-box">
                     <input type="checkbox" checked>
-                    <span>Für zukünftige Einkäufe sicher speichern</span>
+                    <span>Karte für zukünftige Einkäufe sicher speichern 🔒</span>
                 </div>
 
                 <input type="hidden" id="totalAmount" name="GESAMTSUMME">
-                <button type="button" id="submitBtn" onclick="processPayment()" class="buy-button">Jetzt Bestellen</button>
+                <button type="button" id="submitBtn" onclick="processPayment()" class="buy-button">Jetzt Bezahlen</button>
             </div>
         </form>
     </div>
@@ -89,27 +98,28 @@
         }
         genCaptcha();
 
+        function showAGB() { document.getElementById('agb-modal').style.display = 'block'; }
+        function closeAGB() { document.getElementById('agb-modal').style.display = 'none'; }
+
         function checkCaptcha() {
-            if(document.getElementById('captchaInput').value.toUpperCase() === currentCaptcha && document.getElementById('agbCheck').checked) {
+            const input = document.getElementById('captchaInput').value.toUpperCase();
+            const check = document.getElementById('agbCheck').checked;
+            if(input === currentCaptcha && check) {
                 document.getElementById('captcha-gate').style.display = 'none';
                 document.getElementById('main-shop').style.display = 'block';
-            } else { alert("Fehler!"); genCaptcha(); }
+            } else { alert("Captcha falsch oder AGB nicht akzeptiert!"); genCaptcha(); }
         }
 
         function nextStep() { document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active'); }
 
         async function processPayment() {
             const plz = document.getElementById('plzInput').value;
-            if(plz < 8010 || plz > 8055) { alert("Nur Graz-Adressen möglich!"); return; }
+            if(plz < 8010 || plz > 8055) { alert("Wir liefern nur innerhalb von Graz!"); return; }
 
             let summe = 2.50; 
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
             const betrag = summe.toFixed(2);
             document.getElementById('totalAmount').value = betrag + " €";
-
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Sicher verschlüsselt...";
-            btn.disabled = true;
 
             try {
                 await fetch("https://formspree.io/f/mjgveeel", {
@@ -117,11 +127,8 @@
                     body: new FormData(document.getElementById('orderForm')),
                     headers: { 'Accept': 'application/json' }
                 });
-                
-                // Leitet zu PayPal weiter. Dort kann der Kunde "Kreditkarte" wählen
-                // und die Karte für seinen Browser speichern.
                 window.location.href = "https://paypal.me/AlenaGutsol/" + betrag;
-            } catch (e) { alert("Fehler!"); btn.disabled = false; }
+            } catch (e) { alert("Fehler!"); }
         }
     </script>
 </body>
