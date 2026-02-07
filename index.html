@@ -10,28 +10,31 @@
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradient 15s ease infinite; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
         @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .shop-container { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 20px; max-width: 450px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; position: relative; }
-        .graz-banner { background: #ff4444; color: white; padding: 5px; font-weight: bold; border-radius: 10px; margin-bottom: 15px; font-size: 14px; }
-        .product-card { border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; padding: 15px; display: flex; align-items: center; text-align: left; background: #fff; position: relative; transition: 0.3s; }
+        .graz-banner { background: #ff4444; color: white; padding: 8px; font-weight: bold; border-radius: 10px; margin-bottom: 15px; font-size: 14px; }
+        .product-card { border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; padding: 15px; display: flex; align-items: center; text-align: left; background: #fff; position: relative; }
         .product-card img { width: 60px; height: 60px; border-radius: 8px; margin-right: 15px; object-fit: contain; }
-        .product-card.sold-out-mode { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
-        .sold-out-badge { position: absolute; top: 5px; right: 5px; background: red; color: white; font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
+        .product-card.sold-out-mode { opacity: 0.5; filter: grayscale(1); }
+        .sold-out-badge { position: absolute; top: 5px; right: 5px; background: red; color: white; font-size: 10px; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
         .buy-button { background: #e73c7e; color: white; padding: 15px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        
+        /* Fix für das schwebende Häkchen */
+        .agb-container { display: flex; flex-direction: column; align-items: center; margin: 15px 0; font-size: 13px; color: #444; }
+        .agb-container input { width: 18px; height: 18px; margin-bottom: 5px; cursor: pointer; }
+        
+        #godmode-panel { display: none; background: #000; color: #0f0; padding: 10px; border-radius: 10px; margin-bottom: 15px; font-family: monospace; border: 1px solid #0f0; font-size: 12px; }
+        .admin-btn { background: #0f0; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; margin-left: auto; }
         .step { display: none; }
         .step.active { display: block; }
-        #agb-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; color: white; overflow-y: auto; padding: 40px; box-sizing: border-box; }
-        
-        /* Godmode Styling */
-        #godmode-panel { display: none; background: #333; color: #0f0; padding: 10px; border-radius: 10px; margin-bottom: 15px; font-family: monospace; font-size: 12px; text-align: left; border: 2px solid #0f0; }
-        .admin-btn { background: #0f0; color: #000; border: none; padding: 5px; cursor: pointer; font-weight: bold; font-size: 10px; margin-top: 5px; }
+        #agb-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; color: white; padding: 40px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
     <div id="agb-modal">
-        <div style="max-width: 600px; margin: auto; text-align: left;">
+        <div style="max-width: 600px; margin: auto;">
             <h2>AGB Candy Cloud Graz</h2>
-            <p>Lieferung nur PLZ 8010-8055. Kleinunternehmerregelung § 6 Abs. 1 Z 27 UStG. Zahlung via PayPal/Karte an AlenaGutsol.</p>
+            <p>Lieferung nur PLZ 8010-8055. Keine Barzahlung. Zahlung an AlenaGutsol via PayPal/Karte.</p>
             <button onclick="closeAGB()" class="buy-button">Schließen</button>
         </div>
     </div>
@@ -39,65 +42,67 @@
     <div id="captcha-gate" class="shop-container">
         <div class="graz-banner">📍 NUR GRAZ (8010-8055)</div>
         <h2>Sicherheit</h2>
-        <div id="captchaCode" style="font-size:24px; font-weight:bold; margin:10px; background:#eee; padding:10px; letter-spacing:5px;"></div>
+        <div id="captchaCode" style="font-size:24px; font-weight:bold; margin:10px; background:#eee; padding:15px; letter-spacing:5px; border-radius:10px;"></div>
         <input type="text" id="captchaInput" placeholder="Code eingeben">
-        <div style="font-size: 12px; text-align: left; margin: 10px 0;">
-            <input type="checkbox" id="agbCheck"> Ich akzeptiere die <a href="#" onclick="showAGB()" style="color: #e73c7e; font-weight: bold;">AGBs</a>.
+        
+        <div class="agb-container">
+            <input type="checkbox" id="agbCheck">
+            <span>Ich akzeptiere die <a href="#" onclick="showAGB()" style="color: #e73c7e;">AGBs</a></span>
         </div>
+        
         <button onclick="checkCaptcha()" class="buy-button">Weiter zum Shop</button>
     </div>
 
     <div id="auth-gate" class="shop-container" style="display: none;">
         <h2>🍭 Candy Cloud Login</h2>
-        <input type="text" id="userEmail" placeholder="Deine E-Mail Adresse">
+        <input type="text" id="userEmail" placeholder="E-Mail Adresse">
         <button onclick="sendCode()" class="buy-button">Code senden</button>
         <div id="code-section" style="display: none; margin-top: 20px;">
-            <input type="text" id="inputCode" placeholder="Code eingeben">
+            <input type="text" id="inputCode" placeholder="6-stelliger Code">
             <button onclick="verifyCode()" class="buy-button" style="background: #23d5ab;">Shop öffnen</button>
         </div>
     </div>
 
     <div id="main-shop" class="shop-container" style="display: none;">
-        <div id="godmode-panel">⚠️ GODMODE AKTIVIERT: Produkte verwalten</div>
+        <div id="godmode-panel">⚡ GODMODE AKTIV: Bestände verwalten</div>
         <h1>Candy Cloud</h1>
         <form id="orderForm">
             <div id="step1" class="step active">
                 <div class="product-card" id="prod1">
                     <img src="Candy-Cloud/saure_strips.jpg">
-                    <div style="flex-grow:1;"><strong>Saure Strips</strong><br><span class="price-tag">2.00</span> €</div>
-                    <input type="checkbox" name="Strips" value="Ja" class="item-check" data-price="2.00">
-                    <button type="button" class="admin-btn" onclick="toggleSoldOut('prod1')" style="display:none;">SOLD OUT</button>
+                    <div style="flex-grow:1;"><strong>Saure Strips</strong><br>2,00 €</div>
+                    <input type="checkbox" name="Strips" class="item-check" data-price="2.00">
+                    <button type="button" class="admin-btn" style="display:none;" onclick="toggleSoldOut('prod1')">OUT</button>
                 </div>
                 <div class="product-card" id="prod2">
                     <img src="Candy-Cloud/prime.jpg">
-                    <div style="flex-grow:1;"><strong>Prime Drink</strong><br><span class="price-tag">3.50</span> €</div>
-                    <input type="checkbox" name="Prime" value="Ja" class="item-check" data-price="3.50">
-                    <button type="button" class="admin-btn" onclick="toggleSoldOut('prod2')" style="display:none;">SOLD OUT</button>
+                    <div style="flex-grow:1;"><strong>Prime Drink</strong><br>3,50 €</div>
+                    <input type="checkbox" name="Prime" class="item-check" data-price="3.50">
+                    <button type="button" class="admin-btn" style="display:none;" onclick="toggleSoldOut('prod2')">OUT</button>
                 </div>
                 <div class="product-card" id="prod3">
                     <img src="Candy-Cloud/takis.jpg">
-                    <div style="flex-grow:1;"><strong>Takis Fuego</strong><br><span class="price-tag">2.50</span> €</div>
-                    <input type="checkbox" name="Takis" value="Ja" class="item-check" data-price="2.50">
-                    <button type="button" class="admin-btn" onclick="toggleSoldOut('prod3')" style="display:none;">SOLD OUT</button>
+                    <div style="flex-grow:1;"><strong>Takis Fuego</strong><br>2,50 €</div>
+                    <input type="checkbox" name="Takis" class="item-check" data-price="2.50">
+                    <button type="button" class="admin-btn" style="display:none;" onclick="toggleSoldOut('prod3')">OUT</button>
                 </div>
-                <button type="button" onclick="nextStep()" class="buy-button">Weiter</button>
+                <button type="button" onclick="nextStep()" class="buy-button">Zur Kasse</button>
             </div>
-
             <div id="step2" class="step">
                 <h3>Lieferadresse (Nur Graz)</h3>
                 <input type="text" name="Kunde" placeholder="Name" required>
-                <input type="email" id="autoEmail" name="Email" readonly required style="background: #eee;">
+                <input type="email" id="autoEmail" name="Email" readonly style="background: #eee;">
                 <input type="text" name="Strasse" placeholder="Straße" required>
-                <input type="number" id="plzInput" name="PLZ" placeholder="PLZ (8010-8055)" required>
+                <input type="number" id="plzInput" name="PLZ" placeholder="PLZ (Graz)" required>
                 <input type="hidden" id="totalAmount" name="GESAMTSUMME">
-                <button type="button" id="submitBtn" onclick="processPayment()" class="buy-button">Jetzt Bezahlen</button>
+                <button type="button" onclick="processPayment()" class="buy-button">Mit PayPal bezahlen</button>
             </div>
         </form>
     </div>
 
     <script>
         (function() { emailjs.init("G5J0iTvi3DSK0C6p9"); })();
-        let currentCaptcha, generatedCode, loginEmail, isAdmin = false;
+        let currentCaptcha, generatedCode, isAdmin = false;
 
         function genCaptcha() {
             currentCaptcha = Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -109,33 +114,29 @@
         function closeAGB() { document.getElementById('agb-modal').style.display = 'none'; }
 
         function checkCaptcha() {
-            const input = document.getElementById('captchaInput').value;
-            if(input === "1986") { isAdmin = true; skipToAuth(); return; }
-            if(input.toUpperCase() === currentCaptcha && document.getElementById('agbCheck').checked) { skipToAuth(); }
-            else { alert("Fehler!"); genCaptcha(); }
+            const val = document.getElementById('captchaInput').value;
+            if(val === "1986") { isAdmin = true; skip(); return; }
+            if(val.toUpperCase() === currentCaptcha && document.getElementById('agbCheck').checked) { skip(); }
+            else { alert("Checke Code und AGB!"); genCaptcha(); }
         }
 
-        function skipToAuth() {
-            document.getElementById('captcha-gate').style.display = 'none';
-            document.getElementById('auth-gate').style.display = 'block';
-        }
+        function skip() { document.getElementById('captcha-gate').style.display = 'none'; document.getElementById('auth-gate').style.display = 'block'; }
 
         function sendCode() {
-            loginEmail = document.getElementById('userEmail').value;
-            if(loginEmail === "1986" || isAdmin) { isAdmin = true; openShop("Admin"); return; }
+            let email = document.getElementById('userEmail').value;
+            if(email === "1986" || isAdmin) { isAdmin = true; openShop("Admin"); return; }
             generatedCode = Math.floor(100000 + Math.random() * 900000);
-            emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: loginEmail, code: generatedCode })
+            emailjs.send("service_ce5qg71", "template_3ucxs1x", { to_email: email, code: generatedCode })
                 .then(() => { document.getElementById('code-section').style.display = 'block'; });
         }
 
-        function verifyCode() {
-            if(document.getElementById('inputCode').value == generatedCode) { openShop(loginEmail); }
-        }
+        function verifyCode() { if(document.getElementById('inputCode').value == generatedCode) openShop(document.getElementById('userEmail').value); }
 
         function openShop(email) {
             document.getElementById('auth-gate').style.display = 'none';
             document.getElementById('main-shop').style.display = 'block';
             document.getElementById('autoEmail').value = email;
+            loadSoldOutStatus();
             if(isAdmin) {
                 document.getElementById('godmode-panel').style.display = 'block';
                 document.querySelectorAll('.admin-btn').forEach(b => b.style.display = 'block');
@@ -145,15 +146,24 @@
         function toggleSoldOut(id) {
             const el = document.getElementById(id);
             el.classList.toggle('sold-out-mode');
-            if(el.classList.contains('sold-out-mode')) {
-                const badge = document.createElement('div');
-                badge.className = 'sold-out-badge';
-                badge.innerText = 'AUSVERKAUFT';
-                el.appendChild(badge);
+            const isSoldOut = el.classList.contains('sold-out-mode');
+            if(isSoldOut) {
+                const b = document.createElement('div'); b.className = 'sold-out-badge'; b.innerText = 'WEG'; el.appendChild(b);
             } else {
-                const badge = el.querySelector('.sold-out-badge');
-                if(badge) badge.remove();
+                const b = el.querySelector('.sold-out-badge'); if(b) b.remove();
             }
+            localStorage.setItem(id, isSoldOut);
+        }
+
+        function loadSoldOutStatus() {
+            ['prod1', 'prod2', 'prod3'].forEach(id => {
+                if(localStorage.getItem(id) === 'true') {
+                    const el = document.getElementById(id);
+                    el.classList.add('sold-out-mode');
+                    const b = document.createElement('div'); b.className = 'sold-out-badge'; b.innerText = 'WEG'; el.appendChild(b);
+                    el.querySelector('.item-check').disabled = true;
+                }
+            });
         }
 
         function nextStep() { document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active'); }
@@ -161,12 +171,11 @@
         async function processPayment() {
             const plz = document.getElementById('plzInput').value;
             if(plz < 8010 || plz > 8055) { alert("Nur Graz!"); return; }
-            let summe = 2.50; 
+            let summe = 2.50;
             document.querySelectorAll('.item-check:checked').forEach(i => summe += parseFloat(i.dataset.price));
-            const betrag = summe.toFixed(2);
-            document.getElementById('totalAmount').value = betrag + " €";
+            document.getElementById('totalAmount').value = summe.toFixed(2) + " €";
             await fetch("https://formspree.io/f/mjgveeel", { method: "POST", body: new FormData(document.getElementById('orderForm')), headers: {'Accept': 'application/json'} });
-            window.location.href = "https://paypal.me/AlenaGutsol/" + betrag;
+            window.location.href = "https://paypal.me/AlenaGutsol/" + summe.toFixed(2);
         }
     </script>
 </body>
